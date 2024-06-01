@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moving Wizaart</title>
+    <style>
+      .wizaart-logo {
+        position: absolute;
+        cursor: pointer;
+        width: 100px;
+        background: transparent;
+        transition: transform 7s ease;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <img
+      id="wizaart"
+      class="wizaart-logo"
+      alt="wizaart"
+      src="./images/wizaart-right.gif"
+    />
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const logo = document.getElementById("wizaart");
+        const logoWidth = logo.offsetWidth;
+        const logoHeight = logo.offsetHeight;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        console.log({ logoWidth, logoHeight, screenWidth, screenHeight });
+        // wizaart moving logic
+        function wizzartMove(event) {
+          const clickX = event.clientX;
+          const clickY = event.clientY;
+          const logoX = logo.offsetLeft;
+          const logoY = logo.offsetTop;
+          console.log({ clickX, clickY, logoX, logoY });
+          const steps = 10;
+
+          const stepX = (clickX - (logoX + logoWidth / 2)) / steps;
+          const stepY = (clickY - (logoY + logoHeight / 2)) / steps;
+
+          let newX = logoX + stepX * steps;
+          let newY = logoY + stepY * steps;
+
+          newX = Math.max(0, Math.min(screenWidth - logoWidth, newX));
+          newY = Math.max(0, Math.min(screenHeight - logoHeight, newY));
+
+          console.log({ newX, newY });
+          let oldX = localStorage.getItem("clickX");
+          if (oldX && oldX > clickX) {
+            logo.src = `./images/wizaart-left.gif`;
+            logo.style.transform = `translate(${newX}px, ${newY}px)`;
+          } else {
+            logo.src = `./images/wizaart-right.gif`;
+            logo.style.transform = `translate(${newX}px, ${newY}px)`;
+          }
+          localStorage.setItem("clickX", clickX);
+        }
+
+        document.addEventListener("click", wizzartMove);
+      });
+    </script>
+  </body>
+</html>
